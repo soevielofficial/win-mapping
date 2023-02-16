@@ -4,11 +4,11 @@ void __stdcall Shellcode(MANUAL_MAPPING_DATA * pData);
 
 bool ManualMap(HANDLE hProc, const char* szDllFile)
 {
-	BYTE *					pSrcData = nullptr;
-	IMAGE_NT_HEADERS *		pOldNtHeader = nullptr;
-	IMAGE_OPTIONAL_HEADER * pOldOptHeader = nullptr;
-	IMAGE_FILE_HEADER *		pOldFileHeader = nullptr;
-	BYTE *					pTargetBase = nullptr;
+	BYTE *					pSrcData		= nullptr;
+	IMAGE_NT_HEADERS *		pOldNtHeader	= nullptr;
+	IMAGE_OPTIONAL_HEADER * pOldOptHeader	= nullptr;
+	IMAGE_FILE_HEADER *		pOldFileHeader	= nullptr;
+	BYTE *					pTargetBase		= nullptr;
 
 	if (!GetFileAttributes(szDllFile))
 	{
@@ -113,7 +113,7 @@ bool ManualMap(HANDLE hProc, const char* szDllFile)
 	WriteProcessMemory(hProc, pShellcode, Shellcode, 0x1000, nullptr);
 
 	HANDLE hThread = CreateRemoteThread(hProc, nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(pShellcode), pTargetBase, 0, nullptr);
-	if (!hThread)
+	if (!hThread)//!
 	{
 		printf("Thread creation failed 0x%X\n", GetLastError());
 		VirtualFreeEx(hProc, pTargetBase, 0, MEM_RELEASE);
