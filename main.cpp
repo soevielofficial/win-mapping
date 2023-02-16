@@ -1,6 +1,6 @@
 #include "injector.h"
 
-const char szDllFile[] = "C:\\Users\\soevi\\Documents\\Test.dll"; //.dll File
+const char szDllFile[] = "C:\\Users\\soevi\\Documents\\Test.dll";
 const char szProc[] = "Mapping.exe";
 
 int main()

@@ -150,12 +150,12 @@ void __stdcall Shellcode(MANUAL_MAPPING_DATA * pData)
 	if (!pData)
 		return;
 
-	BYTE* pBase = reinterpret_cast<BYTE*>(pData);
-	auto* pOpt = &reinterpret_cast<IMAGE_NT_HEADERS*>(pBase + reinterpret_cast<IMAGE_DOS_HEADER*>(pData)->e_lfanew)->OptionalHeader;
+	BYTE	* pBase = reinterpret_cast<BYTE*>(pData);
+	auto	* pOpt = &reinterpret_cast<IMAGE_NT_HEADERS*>(pBase + reinterpret_cast<IMAGE_DOS_HEADER*>(pData)->e_lfanew)->OptionalHeader;
 
-	auto* _LoadLibraryA = pData->pLoadLibraryA;
-	auto* _GetProcAddress = pData->pGetProcAddress;
-	auto* _DllMain = reinterpret_cast<f_DLL_ENTRY_POINT>(pBase + pOpt->AddressOfEntryPoint);
+	auto	* _LoadLibraryA = pData->pLoadLibraryA;
+	auto	* _GetProcAddress = pData->pGetProcAddress;
+	auto	* _DllMain = reinterpret_cast<f_DLL_ENTRY_POINT>(pBase + pOpt->AddressOfEntryPoint);
 
 	BYTE* LocationDelta = pBase - pOpt->ImageBase;
 	if (LocationDelta);
