@@ -1,7 +1,7 @@
 #include "injector.h"
 
-const char szDllFile[] = "C:\\Users\\soevi\\Documents\\Test.dll";
-const char szProc[] = "Mapping.exe";
+const char szDllFile[] = ""; //.dll File Location
+const char szProc[] = ""; //Process .exe
 
 int main()
 {
@@ -34,7 +34,7 @@ int main()
 	if (!hProc)
 	{
 		DWORD Err = GetLastError();
-		printf("Open Process failed: 0x%X\n", Err);
+		printf("Open process failed: 0x%X\n", Err);
 		system("PAUSE");
 		return 0;
 	}
@@ -42,7 +42,7 @@ int main()
 	if (!ManualMap(hProc, szDllFile))
 	{
 		CloseHandle(hProc);
-		printf("Something went wrong FeelsBadMan\n");
+		printf("Something went wrong!\n");
 		system("PAUSE");
 		return 0;
 	}
