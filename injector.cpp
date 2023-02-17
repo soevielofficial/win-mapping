@@ -1,14 +1,14 @@
 #include "injector.h"
 
-void __stdcall Shellcode(MANUAL_MAPPING_DATA * pData);
+void _stdcall Shellcode(MANUAL_MAPPING_DATA * pData);
 
 bool ManualMap(HANDLE hProc, const char* szDllFile)
 {
-	BYTE *					pSrcData		= nullptr;
-	IMAGE_NT_HEADERS *		pOldNtHeader	= nullptr;
-	IMAGE_OPTIONAL_HEADER * pOldOptHeader	= nullptr;
-	IMAGE_FILE_HEADER *		pOldFileHeader	= nullptr;
-	BYTE *					pTargetBase		= nullptr;
+	BYTE					*		pSrcData		= nullptr;
+	IMAGE_NT_HEADERS		*		pOldNtHeader	= nullptr;
+	IMAGE_OPTIONAL_HEADER	*		pOldOptHeader	= nullptr;
+	IMAGE_FILE_HEADER		*		pOldFileHeader	= nullptr;
+	BYTE					*		pTargetBase		= nullptr;
 
 	if (!GetFileAttributes(szDllFile))
 	{
@@ -56,7 +56,7 @@ bool ManualMap(HANDLE hProc, const char* szDllFile)
 	pOldOptHeader	= &pOldNtHeader->OptionalHeader;
 	pOldFileHeader  = &pOldNtHeader->FileHeader;
 
-#ifdef _WIN64 // _WIN64
+#ifdef _WIN64 //_WIN64
 	if (pOldFileHeader->Machine != IMAGE_FILE_MACHINE_AMD64)
 	{
 		printf("Invalid platform\n");
@@ -145,17 +145,17 @@ bool ManualMap(HANDLE hProc, const char* szDllFile)
 #define RELOC_FLAG RELOC_FLAG32
 #endif
 
-void __stdcall Shellcode(MANUAL_MAPPING_DATA * pData)
+void _stdcall Shellcode(MANUAL_MAPPING_DATA * pData)
 {
 	if (!pData)
 		return;
 
-	BYTE	* pBase = reinterpret_cast<BYTE*>(pData);
-	auto	* pOpt = &reinterpret_cast<IMAGE_NT_HEADERS*>(pBase + reinterpret_cast<IMAGE_DOS_HEADER*>(pData)->e_lfanew)->OptionalHeader;
+	BYTE * pBase = reinterpret_cast<BYTE*>(pData);
+	auto * pOpt = &reinterpret_cast<IMAGE_NT_HEADERS*>(pBase + reinterpret_cast<IMAGE_DOS_HEADER*>(pData)->e_lfanew)->OptionalHeader;
 
-	auto	* _LoadLibraryA = pData->pLoadLibraryA;
-	auto	* _GetProcAddress = pData->pGetProcAddress;
-	auto	* _DllMain = reinterpret_cast<f_DLL_ENTRY_POINT>(pBase + pOpt->AddressOfEntryPoint);
+	auto * _LoadLibraryA = pData->pLoadLibraryA;
+	auto * _GetProcAddress = pData->pGetProcAddress;
+	auto * _DllMain = reinterpret_cast<f_DLL_ENTRY_POINT>(pBase + pOpt->AddressOfEntryPoint);
 
 	BYTE* LocationDelta = pBase - pOpt->ImageBase;
 	if (LocationDelta);
@@ -167,12 +167,12 @@ void __stdcall Shellcode(MANUAL_MAPPING_DATA * pData)
 		while (pRelocData->VirtualAddress)
 		{
 			UINT AmountOfEntries = (pRelocData->SizeOfBlock - sizeof(IMAGE_BASE_RELOCATION)) / sizeof(WORD);
-			WORD* pRelativeInfo = reinterpret_cast<WORD*>(pRelocData + 1);
+			WORD * pRelativeInfo = reinterpret_cast<WORD*>(pRelocData + 1);
 			for (UINT i = 0; i != AmountOfEntries; ++i, ++pRelativeInfo)
 			{
 				if (RELOC_FLAG(*pRelativeInfo))
 				{
-					UINT_PTR* pPatch = reinterpret_cast<UINT_PTR*>(pBase + pRelocData->VirtualAddress + ((*pRelativeInfo) & 0xFFF));
+					UINT_PTR * pPatch = reinterpret_cast<UINT_PTR*>(pBase + pRelocData->VirtualAddress + ((*pRelativeInfo) & 0xFFF));
 					*pPatch = reinterpret_cast<UINT_PTR>(LocationDelta);
 				}
 			}
@@ -188,8 +188,8 @@ void __stdcall Shellcode(MANUAL_MAPPING_DATA * pData)
 			char * szMod = reinterpret_cast<char*>(pBase + pImportDescr->Name);
 			HINSTANCE hDll = LoadLibraryA(szMod);
 
-			ULONG_PTR* pThunkRef = reinterpret_cast<ULONG_PTR*>(pBase + pImportDescr->OriginalFirstThunk);
-			ULONG_PTR* pFuncRef  = reinterpret_cast<ULONG_PTR*>(pBase + pImportDescr->OriginalFirstThunk);
+			ULONG_PTR *	pThunkRef = reinterpret_cast<ULONG_PTR*>(pBase + pImportDescr->OriginalFirstThunk);
+			ULONG_PTR *	pFuncRef  = reinterpret_cast<ULONG_PTR*>(pBase + pImportDescr->OriginalFirstThunk);
 
 			if (!pThunkRef)
 				pThunkRef = pFuncRef;
@@ -202,7 +202,7 @@ void __stdcall Shellcode(MANUAL_MAPPING_DATA * pData)
 				}
 				else
 				{
-					auto* import = reinterpret_cast<IMAGE_IMPORT_BY_NAME*>(pBase + (*pThunkRef));
+					auto * import = reinterpret_cast<IMAGE_IMPORT_BY_NAME*>(pBase + (*pThunkRef));
 				}
 			}
 			++pImportDescr;
