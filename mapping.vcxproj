@@ -144,11 +144,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="injector.h" />
+    <ClInclude Include="bin\injector.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="injector.cpp" />
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="src\injector.cpp" />
+    <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
