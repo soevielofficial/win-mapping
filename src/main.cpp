@@ -1,4 +1,4 @@
-#include "..\bin\injector.h"
+#include "..\header\injector.h"
 
 const char szDllFile[] = ""; //.dll File Location
 const char szProc[] = ""; //Process .exe
